@@ -1,0 +1,16 @@
+kucoin:
+  api-key: 60b9ec5b728a7b000622f03d
+  api-secret: 3bdf31d0-b425-49bf-ae3b-7778cfa099a3
+  api-password: scott123
+
+huobi:
+  api-key: vqgdf4gsga-071e1ffb-5a59a0eb-6d2e5
+  secret-key: 2fb4fe4b-cbd2b008-7b0e5879-f6940
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456789
+    url: jdbc:mysql://127.0.0.1:3306/coin?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource
