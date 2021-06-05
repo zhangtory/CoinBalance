@@ -93,7 +93,8 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
      */
     private BigDecimal getQuotation(String currency) {
         try {
-            return restClient.currencyAPI().getFiatPrice("RMB", currency).get(currency);
+            return restClient.currencyAPI().getFiatPrice("USD", currency.toUpperCase())
+                    .getOrDefault(currency.toUpperCase(), BigDecimal.ZERO);
         } catch (IOException e) {
             e.printStackTrace();
         }

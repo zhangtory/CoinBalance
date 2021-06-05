@@ -39,5 +39,12 @@ public class RecordController {
         return ResponseBuilder.success(recordService.getBalanceHistory(request));
     }
 
+    @ApiOperation("触发记录")
+    @GetMapping("record")
+    public BaseResponse<Void> record() {
+        recordService.logBalanceRecord();
+        return ResponseBuilder.success();
+    }
+
 }
 
