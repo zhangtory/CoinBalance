@@ -1,9 +1,9 @@
 package com.zhangtory.coinbalance.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.kucoin.sdk.KucoinRestClient;
 import com.zhangtory.coinbalance.controller.Request.BalanceHistoryRequest;
 import com.zhangtory.coinbalance.dao.RecordMapper;
 import com.zhangtory.coinbalance.model.entity.Record;
@@ -35,9 +35,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private KucoinRestClient restClient;
-
     @Override
     public List<AccountBalanceVO> getBalance() {
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
@@ -51,10 +48,6 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
         beansMap.values().forEach(balance -> {
             try {
                 List<Record> list = balance.getBalance();
-                // 获取币价
-                list.forEach(record -> {
-                    record.setRmb(record.getAmount().multiply(getQuotation(record.getCurrency())));
-                });
                 log.info(JSONObject.toJSONString(list));
                 this.saveBatch(list);
             } catch (IOException e) {
@@ -76,29 +69,16 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
 
     private List<AccountBalanceVO> getRecordList(LocalDateTime time) {
         List<AccountBalanceVO> voList = new ArrayList<>();
-        List<Record> list = this.list(new QueryWrapper<Record>().lambda()
-                .eq(Record::getCreateTime, time));
+        LambdaQueryWrapper<Record> queryWrapper = new QueryWrapper<Record>().lambda()
+                .eq(Record::getCreateTime, time)
+                .ge(Record::getUsd, BigDecimal.ONE);
+        List<Record> list = this.list(queryWrapper);
         list.forEach(record -> {
             AccountBalanceVO vo = new AccountBalanceVO();
             BeanUtils.copyProperties(record, vo);
             voList.add(vo);
         });
         return voList;
-    }
-
-    /**
-     * 获取行情价格
-     * @param currency
-     * @return
-     */
-    private BigDecimal getQuotation(String currency) {
-        try {
-            return restClient.currencyAPI().getFiatPrice("USD", currency.toUpperCase())
-                    .getOrDefault(currency.toUpperCase(), BigDecimal.ZERO);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return BigDecimal.ZERO;
     }
 
 }

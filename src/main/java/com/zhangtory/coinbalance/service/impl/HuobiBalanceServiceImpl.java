@@ -1,15 +1,20 @@
 package com.zhangtory.coinbalance.service.impl;
 
 import com.huobi.client.AccountClient;
+import com.huobi.client.MarketClient;
 import com.huobi.client.SubUserClient;
 import com.huobi.client.req.account.AccountBalanceRequest;
+import com.huobi.client.req.market.MarketTradeRequest;
+import com.huobi.exception.SDKException;
 import com.huobi.model.account.AccountBalance;
 import com.huobi.model.account.Balance;
 import com.huobi.model.account.SubuserAggregateBalance;
+import com.huobi.model.market.MarketTrade;
 import com.zhangtory.coinbalance.model.entity.Record;
 import com.zhangtory.coinbalance.service.GetBalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,6 +36,9 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
 
     @Autowired
     private SubUserClient subUserClient;
+
+    @Autowired
+    private MarketClient marketClient;
 
     @Override
     public List<Record> getBalance() throws IOException {
@@ -93,6 +101,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                 .account(accountType)
                 .currency(balance.getCurrency())
                 .amount(balance.getBalance())
+                .usd(balance.getBalance().multiply(getQuotation(balance.getCurrency())))
                 .build();
     }
 
@@ -102,7 +111,21 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                 .account(accountType)
                 .currency(balance.getCurrency())
                 .amount(balance.getBalance())
+                .usd(balance.getBalance().multiply(getQuotation(balance.getCurrency())))
                 .build();
+    }
+
+    private BigDecimal getQuotation(String currency) {
+        try {
+            List<MarketTrade> marketTrade = marketClient.getMarketTrade(
+                    MarketTradeRequest.builder().symbol(currency.toLowerCase() + "usdt").build());
+            if (CollectionUtils.isEmpty(marketTrade)) {
+                return BigDecimal.ZERO;
+            }
+            return marketTrade.get(0).getPrice();
+        } catch (SDKException e) {
+            return BigDecimal.ZERO;
+        }
     }
 
 }

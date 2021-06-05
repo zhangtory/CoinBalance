@@ -87,6 +87,7 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 .account(account.getType() == null ? "sub" : account.getType())
                 .currency(account.getCurrency())
                 .amount(account.getBalance())
+                .usd(account.getBalance().multiply(getQuotation(account.getCurrency())))
                 .build();
     }
 
@@ -105,6 +106,21 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 record.setAmount(record.getAmount().add(account.getBalance()));
             }
         }
+    }
+
+    /**
+     * 获取行情价格
+     * @param currency
+     * @return
+     */
+    private BigDecimal getQuotation(String currency) {
+        try {
+            return restClient.currencyAPI().getFiatPrice("USD", currency.toUpperCase())
+                    .getOrDefault(currency.toUpperCase(), BigDecimal.ZERO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return BigDecimal.ZERO;
     }
 
 }

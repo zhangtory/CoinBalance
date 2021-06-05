@@ -1,6 +1,7 @@
 package com.zhangtory.coinbalance.config;
 
 import com.huobi.client.AccountClient;
+import com.huobi.client.MarketClient;
 import com.huobi.client.SubUserClient;
 import com.huobi.constant.HuobiOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,11 @@ public class HuobiClient {
     @Bean
     public SubUserClient huobiSubUserClient(HuobiOptions huobiOptions) {
         return SubUserClient.create(huobiOptions);
+    }
+
+    @Bean
+    public MarketClient huobiMarketClient(HuobiOptions huobiOptions) {
+        return MarketClient.create(huobiOptions);
     }
 
 }

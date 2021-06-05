@@ -49,7 +49,7 @@ public class Record implements Serializable {
      */
     private LocalDateTime createTime;
 
-    private BigDecimal rmb;
+    private BigDecimal usd;
 
     public LocalDateTime getCreateTime() {
         return createTime == null ?

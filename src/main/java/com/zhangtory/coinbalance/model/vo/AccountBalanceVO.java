@@ -36,8 +36,8 @@ public class AccountBalanceVO {
     @ApiModelProperty("总额")
     private BigDecimal amount;
 
-    @ApiModelProperty("rmb")
-    private BigDecimal rmb;
+    @ApiModelProperty("usd")
+    private BigDecimal usd;
 
     @ApiModelProperty("记录时间")
     private LocalDateTime createTime;
