@@ -104,6 +104,7 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 map.put(key, accountBalanceToRecord(account));
             } else {
                 record.setAmount(record.getAmount().add(account.getBalance()));
+                record.setUsd(record.getAmount().multiply(getQuotation(account.getCurrency())));
             }
         }
     }
@@ -114,6 +115,11 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
      * @return
      */
     private BigDecimal getQuotation(String currency) {
+        if ("usdt".equalsIgnoreCase(currency)
+                || "husd".equalsIgnoreCase(currency)
+                || "busd".equalsIgnoreCase(currency)) {
+            return BigDecimal.ONE;
+        }
         try {
             return restClient.currencyAPI().getFiatPrice("USD", currency.toUpperCase())
                     .getOrDefault(currency.toUpperCase(), BigDecimal.ZERO);

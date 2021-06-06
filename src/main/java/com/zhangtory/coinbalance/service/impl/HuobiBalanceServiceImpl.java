@@ -64,6 +64,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                         map.put(key, balanceToRecord(accountBalance.getType(), balance));
                     } else {
                         record.setAmount(record.getAmount().add(balance.getBalance()));
+                        record.setUsd(record.getAmount().multiply(getQuotation(balance.getCurrency())));
                     }
                 }
             });
@@ -85,6 +86,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                     map.put(key, balanceToRecord(balance.getType(), balance));
                 } else {
                     record.setAmount(record.getAmount().add(balance.getBalance()));
+                    record.setUsd(record.getAmount().multiply(getQuotation(balance.getCurrency())));
                 }
             }
         });
@@ -116,6 +118,11 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
     }
 
     private BigDecimal getQuotation(String currency) {
+        if ("usdt".equalsIgnoreCase(currency)
+                || "husd".equalsIgnoreCase(currency)
+                || "busd".equalsIgnoreCase(currency)) {
+            return BigDecimal.ONE;
+        }
         try {
             List<MarketTrade> marketTrade = marketClient.getMarketTrade(
                     MarketTradeRequest.builder().symbol(currency.toLowerCase() + "usdt").build());
