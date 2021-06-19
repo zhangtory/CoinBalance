@@ -18,8 +18,8 @@ CREATE TABLE `lock_balance` (
   `account` varchar(32) NOT NULL COMMENT '账户类型',
   `currency` varchar(16) NOT NULL COMMENT '币种',
   `amount` decimal(20,10) NOT NULL COMMENT '总额',
-  `create_time` date NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
-  `update_time` date NOT NULL DEFAULT current_timestamp() COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT current_timestamp() COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

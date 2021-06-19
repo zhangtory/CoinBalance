@@ -19,7 +19,7 @@ public class Generator {
     void generatorCreate() throws InterruptedException {
         CodeGenerator codeGenerator = new CodeGenerator(databaseProperties, false,
                 "ZhangTory", "com.zhangtory.coinbalance");
-        codeGenerator.create("record");
+        codeGenerator.create("lock_balance");
     }
 
 }

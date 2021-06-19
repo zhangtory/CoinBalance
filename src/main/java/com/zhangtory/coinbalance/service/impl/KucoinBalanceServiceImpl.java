@@ -1,10 +1,13 @@
 package com.zhangtory.coinbalance.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kucoin.sdk.KucoinRestClient;
 import com.kucoin.sdk.rest.response.AccountBalancesResponse;
 import com.kucoin.sdk.rest.response.SubAccountBalanceResponse;
+import com.zhangtory.coinbalance.model.entity.LockBalance;
 import com.zhangtory.coinbalance.model.entity.Record;
 import com.zhangtory.coinbalance.service.GetBalanceService;
+import com.zhangtory.coinbalance.service.LockBalanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +29,20 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
     @Autowired
     private KucoinRestClient restClient;
 
+    @Autowired
+    private LockBalanceService lockBalanceService;
+
     @Override
     public List<Record> getBalance() throws IOException {
         Map<String, Record> map = getAccountBalance();
+        // load lock balance
+        lockBalanceService.list(new QueryWrapper<LockBalance>().lambda()
+                .eq(LockBalance::getExchange, EXCHANGE_CODE))
+                .forEach(lockBalance -> {
+                    String key = buildMapKey(lockBalance.getAccount(), lockBalance.getCurrency());
+                    map.put(key, balanceToRecord(lockBalance));
+                });
+        // request balance
         getSubAccountBalance(map);
         return new ArrayList<>(map.values());
     }
@@ -76,6 +90,11 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 .toString();
     }
 
+    private String buildMapKey(String type, String currency) {
+        return new StringBuilder(type)
+                .append("-").append(currency).toString();
+    }
+
     /**
      * 返回信息构造为record
      * @param account
@@ -88,6 +107,16 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 .currency(account.getCurrency())
                 .amount(account.getBalance())
                 .usd(account.getBalance().multiply(getQuotation(account.getCurrency())))
+                .build();
+    }
+
+    private Record balanceToRecord(LockBalance lockBalance) {
+        return Record.builder()
+                .exchange(EXCHANGE_CODE)
+                .account(lockBalance.getAccount())
+                .currency(lockBalance.getCurrency())
+                .amount(lockBalance.getAmount())
+                .usd(lockBalance.getAmount().multiply(getQuotation(lockBalance.getCurrency())))
                 .build();
     }
 

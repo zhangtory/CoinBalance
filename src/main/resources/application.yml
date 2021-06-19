@@ -1,11 +1,11 @@
 kucoin:
-  api-key: 60b9ec5b728a7b000622f03d
-  api-secret: 3bdf31d0-b425-49bf-ae3b-7778cfa099a3
+  api-key: 60bb766e7bba9b00063c6f24
+  api-secret: 4d745e4c-f863-4c0d-bee8-18498b832b43
   api-password: scott123
 
 huobi:
-  api-key: vqgdf4gsga-071e1ffb-5a59a0eb-6d2e5
-  secret-key: 2fb4fe4b-cbd2b008-7b0e5879-f6940
+  api-key: dqnh6tvdf3-9d59f51f-ed085d95-e22f6
+  secret-key: 81206161-8db8e66b-808990ea-c07c2
 
 spring:
   datasource:
