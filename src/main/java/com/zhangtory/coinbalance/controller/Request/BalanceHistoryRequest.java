@@ -15,6 +15,6 @@ public class BalanceHistoryRequest {
     private List<String> currency;
 
     @ApiModelProperty("请求条数，默认最近24条")
-    private Integer num = 24;
+    private Integer num = 48;
 
 }

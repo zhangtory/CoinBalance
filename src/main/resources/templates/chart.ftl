@@ -19,6 +19,12 @@
     // 总资产折线图
     var sumChart = echarts.init(document.getElementById('sumChart'));
     var sumOption = {
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
         xAxis: {
             type: 'category',
             boundaryGap: false,

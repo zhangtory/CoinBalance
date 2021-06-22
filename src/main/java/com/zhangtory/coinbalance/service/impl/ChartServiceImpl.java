@@ -37,11 +37,9 @@ public class ChartServiceImpl implements ChartService {
             for (AccountBalanceVO accountBalanceVO : balanceList) {
                 sum = sum.add(accountBalanceVO.getUsd());
             }
-            amountList.add(sum.toPlainString());
             if (!balanceList.isEmpty()) {
-                timeList.add(balanceList.get(0).getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-            } else {
-                timeList.add("no_record");
+                amountList.add(sum.toPlainString());
+                timeList.add(balanceList.get(0).getCreateTime().plusHours(8).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             }
         });
         response.setTimeList(timeList);
