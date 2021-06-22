@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +67,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
             List<AccountBalanceVO> voList = getRecordList(time);
             result.add(voList);
         }
+        Collections.reverse(result);
         return result;
     }
 

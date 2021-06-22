@@ -5,34 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Echart Learn</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.js" integrity="sha256-ferwUEq7cQcMM2B18rhipCnqqLRq2xOEVco+9n40m3U=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js"></script>
 </head>
 
 <body>
-<h1>hello world</h1>
-<h1 style="color: red">123</h1>
-<div id="main" style="width: 2200px;height:1000px;"></div>
+
+<h1>Coin Balance Record</h1>
+<h1 style="color: red">总资产:</h1>
+<div id="sumChart" style="width: 1500px;height:600px;"></div>
+
+
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
-    // 指定图表的配置项和数据
-    var option = {
-        legend: {
-            data: ${market}
-        },
+    // 总资产折线图
+    var sumChart = echarts.init(document.getElementById('sumChart'));
+    var sumOption = {
         xAxis: {
             type: 'category',
+            boundaryGap: false,
             data: ${timeList}
         },
         yAxis: {
             type: 'value',
-            scale:true,
+            scale: true,
         },
-        series: ${series}
+        series: [{
+            data: ${sumChartData},
+            type: 'line',
+            smooth: true
+        }]
     };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
+    sumChart.setOption(sumOption);
 </script>
 
 </body>
