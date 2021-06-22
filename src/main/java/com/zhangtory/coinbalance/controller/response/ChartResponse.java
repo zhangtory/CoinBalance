@@ -1,5 +1,7 @@
 package com.zhangtory.coinbalance.controller.response;
 
+import com.zhangtory.coinbalance.model.vo.DetailsVo;
+import com.zhangtory.coinbalance.model.vo.HoldRateVo;
 import lombok.Data;
 
 import java.util.List;
@@ -19,5 +21,20 @@ public class ChartResponse {
      * sumChart数据
      */
     List<String> amountList;
+
+    /**
+     * detailListChart
+     */
+    List<DetailsVo> detailList;
+
+    /**
+     * detailLegend
+     */
+    List<String> detailLegendList;
+
+    /**
+     * holdRateData
+     */
+    List<HoldRateVo> holdRateList;
 
 }

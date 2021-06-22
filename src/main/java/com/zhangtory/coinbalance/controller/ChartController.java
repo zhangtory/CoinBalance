@@ -31,6 +31,9 @@ public class ChartController {
         ChartResponse response = chartService.sumChart();
         model.addAttribute("timeList", JSONObject.toJSONString(response.getTimeList()));
         model.addAttribute("sumChartData", JSONObject.toJSONString(response.getAmountList()));
+        model.addAttribute("detailListData", JSONObject.toJSONString(response.getDetailList()));
+        model.addAttribute("detailLegend", JSONObject.toJSONString(response.getDetailLegendList()));
+        model.addAttribute("holdRateData", JSONObject.toJSONString(response.getHoldRateList()));
         return "chart";
     }
 
