@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -46,6 +47,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void logBalanceRecord() {
         Map<String, GetBalanceService> beansMap = applicationContext.getBeansOfType(GetBalanceService.class);
         beansMap.values().forEach(balance -> {

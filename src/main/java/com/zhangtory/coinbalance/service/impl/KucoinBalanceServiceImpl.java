@@ -2,6 +2,7 @@ package com.zhangtory.coinbalance.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kucoin.sdk.KucoinRestClient;
+import com.kucoin.sdk.exception.KucoinApiException;
 import com.kucoin.sdk.rest.response.AccountBalancesResponse;
 import com.kucoin.sdk.rest.response.SubAccountBalanceResponse;
 import com.zhangtory.coinbalance.model.entity.LockBalance;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +36,25 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
 
     @Override
     public List<Record> getBalance() throws IOException {
-        Map<String, Record> map = getAccountBalance();
-        // load lock balance
-        lockBalanceService.list(new QueryWrapper<LockBalance>().lambda()
-                .eq(LockBalance::getExchange, EXCHANGE_CODE))
-                .forEach(lockBalance -> {
-                    String key = buildMapKey(lockBalance.getAccount(), lockBalance.getCurrency());
-                    map.put(key, balanceToRecord(lockBalance));
-                });
-        // request balance
-        getSubAccountBalance(map);
-        return new ArrayList<>(map.values());
+        try {
+            Map<String, Record> map = getAccountBalance();
+            // load lock balance
+            lockBalanceService.list(new QueryWrapper<LockBalance>().lambda()
+                    .eq(LockBalance::getExchange, EXCHANGE_CODE))
+                    .forEach(lockBalance -> {
+                        String key = buildMapKey(lockBalance.getAccount(), lockBalance.getCurrency());
+                        map.put(key, balanceToRecord(lockBalance));
+                    });
+            // request balance
+            getSubAccountBalance(map);
+            return new ArrayList<>(map.values());
+        } catch (KucoinApiException e) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ignored) {
+            }
+            return getBalance();
+        }
     }
 
     /**
@@ -107,6 +117,7 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 .currency(account.getCurrency())
                 .amount(account.getBalance())
                 .usd(account.getBalance().multiply(getQuotation(account.getCurrency())))
+                .createTime(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0))
                 .build();
     }
 
@@ -117,6 +128,7 @@ public class KucoinBalanceServiceImpl implements GetBalanceService {
                 .currency(lockBalance.getCurrency())
                 .amount(lockBalance.getAmount())
                 .usd(lockBalance.getAmount().multiply(getQuotation(lockBalance.getCurrency())))
+                .createTime(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0))
                 .build();
     }
 

@@ -13,7 +13,7 @@ public class CoinBalanceApplication {
 
     @PostConstruct
     void started() {
-        TimeZone.setDefault(TimeZone.getTimeZone("+0"));
+        TimeZone.setDefault(TimeZone.getTimeZone("+8"));
     }
 
     public static void main(String[] args) {

@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +120,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                 .currency(balance.getCurrency())
                 .amount(balance.getBalance())
                 .usd(balance.getBalance().multiply(getQuotation(balance.getCurrency())))
+                .createTime(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0))
                 .build();
     }
 
@@ -129,6 +131,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                 .currency(balance.getCurrency())
                 .amount(balance.getBalance())
                 .usd(balance.getBalance().multiply(getQuotation(balance.getCurrency())))
+                .createTime(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0))
                 .build();
     }
 
@@ -139,6 +142,7 @@ public class HuobiBalanceServiceImpl implements GetBalanceService {
                 .currency(lockBalance.getCurrency())
                 .amount(lockBalance.getAmount())
                 .usd(lockBalance.getAmount().multiply(getQuotation(lockBalance.getCurrency())))
+                .createTime(LocalDateTime.now().withMinute(0).withSecond(0).withNano(0))
                 .build();
     }
 
